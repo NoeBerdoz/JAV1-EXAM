@@ -1,28 +1,39 @@
 package ch.ansermgw.angryword.resource;
 
 import ch.ansermgw.angryword.activities.Play;
+import ch.ansermgw.angryword.models.SemanticWord;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class VocabularyResource {
-    private final List<WordResource> words;
+    private final List<SemanticWord> words;
     private final String name;
 
-    public VocabularyResource(ArrayList<WordResource> words, String name) {
-        this.words = words;
-        this.name = name;
-    }
+
 
     public VocabularyResource(String name) {
         words = new ArrayList<>();
         this.name = name;
     }
 
+    /*
+    public VocabularyResource(ArrayList<WordResource> words, String name) {
+        this.words = words;
+        this.name = name;
+    } */
+
+    /*
     public void addWord(WordResource word) {
+        words.add(word);
+    }*/
+
+    public void addSemanticWord(SemanticWord word) {
         words.add(word);
     }
 
+
+    /*
     public WordResource getRandomUnusedWordResource() {
         List<WordResource> unusedWord = new ArrayList<>();
 
@@ -53,5 +64,5 @@ public class VocabularyResource {
         }
 
         return wordResources.get(Play.rand.nextInt(wordResources.size()));
-    }
+    } */
 }
