@@ -1,5 +1,6 @@
 package ch.ansermgw.angryword.resource;
 
+import ch.ansermgw.angryword.AngrywordMain;
 import ch.ansermgw.angryword.activities.Play;
 import ch.ansermgw.angryword.models.SemanticWord;
 
@@ -33,11 +34,11 @@ public class VocabularyResource {
     }
 
 
-    /*
-    public WordResource getRandomUnusedWordResource() {
-        List<WordResource> unusedWord = new ArrayList<>();
 
-        for (WordResource word : words) {
+    public SemanticWord getRandomUnusedWordResource() {
+        List<SemanticWord> unusedWord = new ArrayList<>();
+
+        for (SemanticWord word : words) {
             if (!word.isUsed()) {
                 unusedWord.add(word);
             }
@@ -46,10 +47,10 @@ public class VocabularyResource {
         return getRandomWordResourceFromList(unusedWord);
     }
 
-    public WordResource getRandomUsedWordResource() {
-        List<WordResource> usedWord = new ArrayList<>();
+    public SemanticWord getRandomUsedWordResource() {
+        List<SemanticWord> usedWord = new ArrayList<>();
 
-        for (WordResource word : words) {
+        for (SemanticWord word : words) {
             if (word.isUsed()) {
                 usedWord.add(word);
             }
@@ -58,11 +59,17 @@ public class VocabularyResource {
         return getRandomWordResourceFromList(usedWord);
     }
 
-    private WordResource getRandomWordResourceFromList(List<WordResource> wordResources) {
+    private SemanticWord getRandomWordResourceFromList(List<SemanticWord> wordResources) {
         if (wordResources.size() < 1) {
             return null;
         }
 
-        return wordResources.get(Play.rand.nextInt(wordResources.size()));
-    } */
+        return words.get(AngrywordMain.getInstance().getRandom().nextInt(wordResources.size()));
+    }
+
+    public void reset() {
+        for(SemanticWord wordResource : words) {
+            wordResource.setUsed(false);
+        }
+    }
 }

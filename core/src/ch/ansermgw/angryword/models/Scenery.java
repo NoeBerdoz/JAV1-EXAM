@@ -1,5 +1,6 @@
 package ch.ansermgw.angryword.models;
 
+import ch.ansermgw.angryword.AngrywordMain;
 import ch.ansermgw.angryword.activities.Play;
 import ch.ansermgw.angryword.exception.OutOfSceneryException;
 import ch.ansermgw.angryword.resource.VocabularyResource;
@@ -9,15 +10,18 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Scenery {
     private static final int BLOCK_SIZE = 50;
     private final ArrayList<PhysicalObject> elements;
     private final VocabularyResource vocabulary;
+    private final Random random;
 
     public Scenery(VocabularyResource vocabulary) {
         this.vocabulary = vocabulary;
         elements = new ArrayList<>();
+        this.random = AngrywordMain.getInstance().getRandom();
     }
 
     public void addElement(PhysicalObject el) {
@@ -47,10 +51,10 @@ public class Scenery {
         int pigCount = 0;
 
         while (pigCount < 3 && nbIteration < 100) {
-            WordResource wordResource = vocabulary.getRandomUnusedWordResource();
+            SemanticWord wordResource = vocabulary.getRandomUnusedWordResource();
 
             try {
-                PhysicalObject element = elements.get(Play.rand.nextInt(elements.size()));
+                PhysicalObject element = elements.get(random.nextInt(elements.size()));
 
                 Vector2 position = generateRandomItemPosition(
                         Math.round(element.getX()),
@@ -82,7 +86,7 @@ public class Scenery {
 
         while (position == null) {
             try {
-                int randomeX = startX + Play.rand.nextInt(Play.WORLD_WIDTH - startX - 100);
+                int randomeX = startX + random.nextInt(Play.WORLD_WIDTH - startX - 100);
                 int startY = Play.FLOOR_HEIGHT;
 
                 position = generateRandomItemPosition(randomeX, startY);

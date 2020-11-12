@@ -6,6 +6,8 @@ import ch.ansermgw.angryword.provider.VocabularyProvider;
 import ch.ansermgw.angryword.resource.VocabularyResource;
 import ch.ansermgw.angryword.resource.WordResource;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.Random;
@@ -15,8 +17,6 @@ public class Play extends Activity {
     public static final int WORLD_HEIGHT = 900;
     public static final int FLOOR_HEIGHT = 150;
     public static final Vector2 BIRD_SPAWN = new Vector2(200, FLOOR_HEIGHT + 200);
-    public static Random rand;
-
 
     private Bird bird;
     private Wasp wasp;
@@ -25,12 +25,24 @@ public class Play extends Activity {
     private Bubble bubble;
     private Panel panel;
     private Button pauseBtn;
+    private BitmapFont langSelected;
+
+    private final VocabularyResource vocGame;
+    private final Language langFrom;
+    private final Language langTo;
+
+    public Play(VocabularyResource vocGame, Language langFrom, Language langTo) {
+        this.vocGame = vocGame;
+        this.langFrom = langFrom;
+        this.langTo = langTo;
+
+
+    }
 
     @Override
     public void create() {
         super.create();
 
-        rand = new Random(System.currentTimeMillis());
         vocabulary = VocabularyProvider.getInstance().getRandomVocabulary();
 
         scenery = new Scenery(vocabulary);
@@ -41,7 +53,11 @@ public class Play extends Activity {
         bird = new Bird(BIRD_SPAWN);
         wasp = new Wasp(new Vector2(Math.abs(WORLD_WIDTH / 3), Math.abs(WORLD_HEIGHT / 2)));
 
-        panel = new Panel(new Vector2(Math.abs(WORLD_WIDTH / 15), WORLD_HEIGHT - Panel.HEIGHT), vocabulary.getRandomUsedWordResource());
+        panel = new Panel(new Vector2(Math.abs(WORLD_WIDTH / 15), WORLD_HEIGHT - Panel.HEIGHT), vocabulary.getRandomUsedWordResource().getLanguageValue(langFrom));
+
+        langSelected = new BitmapFont();
+        langSelected.setColor(Color.BLUE);
+        langSelected.getData().setScale(5);
 
         pauseBtn = new Button(new Vector2(
                 Math.abs(WORLD_WIDTH - 2 * WORLD_WIDTH / 15),
@@ -69,6 +85,11 @@ public class Play extends Activity {
         wasp.draw(super.batch);
         scenery.draw(super.batch);
         panel.draw(super.batch);
+        langSelected.draw(
+                super.batch,
+                "Pratique de " + langFrom.getDisplayLanguage() + " en " + langTo.getDisplayLanguage(),
+                Math.abs(WORLD_WIDTH / 4), Math.abs(WORLD_HEIGHT - 100)
+        );
         pauseBtn.draw(super.batch);
 
         if (bubble != null)
@@ -96,10 +117,10 @@ public class Play extends Activity {
                     Pig pig = ((Pig) element);
                     pig.kill();
 
-                    WordResource wordResource = vocabulary.getRandomUsedWordResource();
+                    SemanticWord wordResource = vocabulary.getRandomUsedWordResource();
 
-                    if (panel.getWordResource().equals(pig.getWord()) && wordResource != null) {
-                        this.panel.setWordResource(wordResource);
+                    if (panel.getWordPanel().equals(pig.getWord().getLanguageValue(langFrom)) && wordResource != null) {
+                        this.panel.setWordPanel(wordResource.getLanguageValue(langFrom));
                     } else {
                         AngrywordMain.getInstance().pop();
                     }
@@ -112,6 +133,12 @@ public class Play extends Activity {
 
 
         }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        this.vocabulary.reset();
     }
 
     @Override
@@ -131,7 +158,7 @@ public class Play extends Activity {
                                 physicalObject.getX() - physicalObject.getWidth(),
                                 physicalObject.getY() + physicalObject.getHeight()
                         ),
-                        ((Pig) physicalObject).getWord()
+                        ((Pig) physicalObject).getWord().getLanguageValue(langTo)
                 );
                 return true;
             }

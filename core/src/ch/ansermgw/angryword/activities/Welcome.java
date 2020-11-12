@@ -1,6 +1,7 @@
 package ch.ansermgw.angryword.activities;
 
 import ch.ansermgw.angryword.AngrywordMain;
+import ch.ansermgw.angryword.provider.VocabularyProvider;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
@@ -9,6 +10,7 @@ import static ch.ansermgw.angryword.activities.Play.WORLD_WIDTH;
 
 public class Welcome extends Activity {
     private BitmapFont title;
+    private VocabularyProvider vocabularyProvider;
 
     @Override
     public void create() {
@@ -17,6 +19,8 @@ public class Welcome extends Activity {
         title = new BitmapFont();
         title.setColor(Color.RED);
         title.getData().setScale(7);
+
+        this.vocabularyProvider = VocabularyProvider.getInstance();
     }
 
     @Override
@@ -28,7 +32,11 @@ public class Welcome extends Activity {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Activity play = new Play();
+        Activity play = new Play(
+                vocabularyProvider.getRandomVocabulary(),
+                vocabularyProvider.getLanguages().get(0),
+                vocabularyProvider.getLanguages().get(1)
+        );
         play.create();
         AngrywordMain.getInstance().push(play);
 
