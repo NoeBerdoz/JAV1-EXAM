@@ -46,7 +46,7 @@ public class Welcome extends Activity {
 
         choiceTitle = new BitmapFont();
         choiceTitle.setColor(Color.RED);
-        choiceTitle.getData().setScale(7);
+        choiceTitle.getData().setScale(3);
     }
 
     @Override
@@ -84,16 +84,42 @@ public class Welcome extends Activity {
         super.batch.end();
     }
 
+    private Language getButtonLanguage(List<Button> langBtn, Vector2 touched) {
+        for (Button button : langBtn) {
+            if (isPhysicalObjectContainingVector(button, touched)) {
+                for (Language language : vocabularyProvider.getLanguages()) {
+                    if (language.getDisplayLanguage().equals(button.getValue())) {
+                        return language;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Activity play = new Play(
+        /*Activity play = new Play(
                 vocabularyProvider.getRandomVocabulary(),
                 vocabularyProvider.getLanguages().get(0),
                 vocabularyProvider.getLanguages().get(1)
         );
         play.create();
-        AngrywordMain.getInstance().push(play);
+        AngrywordMain.getInstance().push(play);*/
+        Vector2 touchPos = getAbsolutePosition(screenX, screenY);
+        Language touchedLangButtonFrom = getButtonLanguage(buttonLangFrom, touchPos);
 
+        if (touchedLangButtonFrom != null) {
+            langFrom = touchedLangButtonFrom;
+                    return true;
+        }
+
+
+        Language touchedLangButtonTo = getButtonLanguage(buttonLangTo, touchPos);
+        if (touchedLangButtonTo != null) {
+            langTo = touchedLangButtonTo;
+            return true;
+        }
         return true;
     }
 
