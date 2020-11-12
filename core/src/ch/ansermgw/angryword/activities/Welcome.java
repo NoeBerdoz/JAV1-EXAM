@@ -1,32 +1,86 @@
 package ch.ansermgw.angryword.activities;
 
 import ch.ansermgw.angryword.AngrywordMain;
+import ch.ansermgw.angryword.models.Button;
+import ch.ansermgw.angryword.models.Language;
 import ch.ansermgw.angryword.provider.VocabularyProvider;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector2;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static ch.ansermgw.angryword.activities.Play.WORLD_HEIGHT;
 import static ch.ansermgw.angryword.activities.Play.WORLD_WIDTH;
 
 public class Welcome extends Activity {
     private BitmapFont title;
+    private BitmapFont choiceTitle;
     private VocabularyProvider vocabularyProvider;
+    private List<Button> buttonLangFrom;
+    private List<Button> buttonLangTo;
+
+    private Language langFrom;
+    private Language langTo;
 
     @Override
     public void create() {
         super.create();
+        this.vocabularyProvider = VocabularyProvider.getInstance();
+        buttonLangFrom = new ArrayList<>();
+        buttonLangTo = new ArrayList<>();
+
+        int index = 0;
+
+        for (Language language : vocabularyProvider.getLanguages()) {
+            float yPos = WORLD_HEIGHT - (2 + index) * Math.abs(WORLD_HEIGHT / 4);
+            buttonLangFrom.add(new Button(new Vector2(Math.abs(WORLD_WIDTH / 4), yPos), language.getDisplayLanguage()));
+            buttonLangTo.add(new Button(new Vector2(Math.abs(WORLD_WIDTH / 4), yPos), language.getDisplayLanguage()));
+            index++;
+        }
 
         title = new BitmapFont();
         title.setColor(Color.RED);
         title.getData().setScale(7);
 
-        this.vocabularyProvider = VocabularyProvider.getInstance();
+        choiceTitle = new BitmapFont();
+        choiceTitle.setColor(Color.RED);
+        choiceTitle.getData().setScale(7);
     }
 
     @Override
     public void render() {
         super.render();
-        title.draw(super.batch, "Hello", Math.abs(WORLD_WIDTH / 2), Math.abs(WORLD_HEIGHT / 2));
+        List<Button> allButtons = new ArrayList<>();
+        String langFromChoice;
+        String langToChoice;
+
+        if (langFrom == null) {
+            langFromChoice = " choisir ";
+            allButtons.addAll(buttonLangFrom);
+        } else {
+            langFromChoice = langFrom.getDisplayLanguage();
+        }
+        if (langTo == null) {
+            langToChoice = " choisir ";
+            allButtons.addAll(buttonLangTo);
+        } else {
+            langToChoice = langTo.getDisplayLanguage();
+        }
+
+        title.draw(super.batch, "Angry Wirds", Math.abs(WORLD_WIDTH / 3), Math.abs(WORLD_HEIGHT - 50));
+        choiceTitle.draw(
+            super.batch,
+                "Exercice de " + langFromChoice + " en " + langToChoice,
+                Math.abs(WORLD_WIDTH / 4),
+                WORLD_HEIGHT - 200
+        );
+
+        for (Button button : allButtons) {
+            button.draw(super.batch);
+        }
+
         super.batch.end();
     }
 
