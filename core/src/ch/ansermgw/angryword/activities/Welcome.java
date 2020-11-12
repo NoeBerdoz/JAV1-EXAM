@@ -99,7 +99,8 @@ public class Welcome extends Activity {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        /*Activity play = new Play(
+        /* REMETTRE CETTE PARTIE POUR POUVOIR ACCEDER à L'ACTIVITY PLAY
+        Activity play = new Play(
                 vocabularyProvider.getRandomVocabulary(),
                 vocabularyProvider.getLanguages().get(0),
                 vocabularyProvider.getLanguages().get(1)
